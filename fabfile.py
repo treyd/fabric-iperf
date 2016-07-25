@@ -63,11 +63,11 @@ def print_results(results):
 
 def run_iperf_between_hosts(time, port):
     """Runs an iperf test from all other hosts to this host"""
-    execute(start_iperf_server, port=port, hosts=env.host)
-    iperf_clients = [h for h in env.hosts if h is not env.host]
+    execute(start_iperf_server, port=port, hosts=env.host_string)
+    iperf_clients = [h for h in env.hosts if h is not env.host_string]
     results = execute(run_iperf_client, server=env.host, port=port,
                       time=time, hosts=iperf_clients)
-    execute(killall_iperf, hosts=env.host)
+    execute(killall_iperf, hosts=env.host_string)
     return results
 
 
