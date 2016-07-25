@@ -50,10 +50,11 @@ def print_results(results):
         for tohost in results.keys():
             row = []
             for colheader in results.keys():
-                if colheader is tohost:
-                    row.append('X')
-                else:
+                try:
                     row.append(results[tohost][colheader]['tput'])
+                except (AttributeError, KeyError):
+                    #data point doesn't exist due to self-test or failure
+                    row.append('X')
 
             csvwriter.writerow([tohost] + row)
         print sio.getvalue()
@@ -64,6 +65,7 @@ def print_results(results):
 def run_iperf_between_hosts(time, port):
     """Runs an iperf test from all other hosts to this host"""
     execute(start_iperf_server, port=port, hosts=env.host_string)
+    # avoid testing to self
     iperf_clients = [h for h in env.hosts if h is not env.host_string]
     results = execute(run_iperf_client, server=env.host, port=port,
                       time=time, hosts=iperf_clients)
