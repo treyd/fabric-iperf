@@ -18,7 +18,7 @@ this tool will test the following 9 paths:
  
 Note that, as in the real world, this tool considers the forward and 
 reverse path as two separate paths. For large numbers of systems, 
-the number of paths can grow quite large (`2^N - N`).  These paths will 
+the number of paths can grow quite large (`N^2 - N`).  These paths will 
 be tested one by one (to avoid co-interference). Use caution when
  scaling.
 
