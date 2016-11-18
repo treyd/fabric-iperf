@@ -1,5 +1,5 @@
 import csv
-
+import sys
 from fabric.api import *
 from fabric.contrib.files import *
 from fabric.utils import warn, abort, puts
@@ -11,10 +11,24 @@ REGEX_IPERF_CLIENT_OUTPUT = '\[[ 0-9]+\]  [0-9.]+- *(?P<time>[0-9.]+ sec) * ' \
                             '(?P<xfer>[0-9.]+ [GMK]Bytes) *' \
                             '(?P<tput>[0-9.]+ [GMK]bits/sec)'
 
-
-
 # TODO: push ssh key task
-# TODO: sudoers task
+
+
+def read_hosts(filename=None):
+    """reads in a file of host strings (one per line) and sets hosts environment
+
+    Optional parameters:
+      filename: reads in host strings from file; otherwise will read STDIN
+    """
+    if filename:
+        try:
+            hostsfile = open(filename)
+            env.hosts = [line.strip() for line in hostsfile.readlines()]
+        except Exception as e:
+            abort('problem reading hosts file %s:%s' % (filename, e))
+    else:
+        env.hosts = [line.strip() for line in sys.stdin.readlines()]
+
 
 def start_iperf_server(port=5005):
     # TODO figure out why this doesn't work consistently
@@ -53,8 +67,15 @@ def print_results(results):
                 try:
                     row.append(results[tohost][colheader]['tput'])
                 except (AttributeError, KeyError):
-                    #data point doesn't exist due to self-test or failure
+                    # data point doesn't exist due to self-test or failure
                     row.append('X')
+                except Exception as e:
+                    # something else wrong with the data point,
+                    # log error and mark output
+                    warn("Error parsing datapoint for dest %s from %s" % (tohost,
+                                                                          colheader))
+                    warn("Got exception: %s" % e)
+                    row.append('Error')
 
             csvwriter.writerow([tohost] + row)
         print sio.getvalue()
@@ -100,7 +121,4 @@ def killall_iperf():
     sudo("killall -9 iperf", warn_only=True)
 
 
-def runme(cmd):
-    """Runs command on all hosts"""
-    run(cmd)
 
