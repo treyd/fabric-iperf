@@ -1,9 +1,10 @@
 import csv
 import sys
+import re
 from fabric.api import *
 from fabric.contrib.files import *
 from fabric.utils import warn, abort, puts
-
+from fabric.exceptions import CommandTimeout
 
 REGEX_IPERF_PID_OUTPUT = 'The Iperf daemon process ID : (?P<pid>\d+)'
 
@@ -51,8 +52,14 @@ def _process_iperf_client_output(output):
 
 
 def run_iperf_client(server, time=30, port=5005):
-    output = run("iperf -c {s} -t {t} -p {p}".format(s=server, t=time, p=port))
-    results = _process_iperf_client_output(output)
+    timeout=int(time)*2
+    print("iperf command timeout is %s" % timeout)
+    try:
+        output = run("iperf -c {s} -t {t} -p {p}".format(s=server, t=time, p=port), timeout=timeout)
+        results = _process_iperf_client_output(output)
+    except CommandTimeout:
+        warn("iperf client timed out after %s seconds" % timeout)
+        results = None
     return results
 
 
