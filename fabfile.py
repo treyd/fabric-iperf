@@ -3,7 +3,7 @@ import sys
 from fabric.api import *
 from fabric.contrib.files import *
 from fabric.utils import warn, abort, puts
-
+import re
 
 REGEX_IPERF_PID_OUTPUT = 'The Iperf daemon process ID : (?P<pid>\d+)'
 
