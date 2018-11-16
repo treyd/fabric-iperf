@@ -43,9 +43,9 @@ Fabric uses SSH to communicate with remote hosts, so you will need SSH
 access to these systems.  Also, the SSH user needs to have `sudo`
 privileges.
 
-Fabric can also use OpenSSH config files and use public key auth for 
-passwordless access.  
-See [Fabric documentation](http://docs.fabfile.org/en/latest/usage/fab.html) for more info.
+Fabric can also use OpenSSH config files and use public key auth for passwordless access.
+See [Fabric documentation](http://docs.fabfile.org/en/latest/usage/fab.html) for more
+info.
 
 ## Usage
 The task that will run tests is the `test_network` task.  You can run it on 
