@@ -24,8 +24,10 @@ be tested one by one (to avoid co-interference). Use caution when
 
 
 ## Installation
-This tool requires [Fabric](https://www.fabfile.org).  You can install 
-Fabric easily by running the command `pip install Fabric`.
+This tool requires [Fabric](https://www.fabfile.org) version 1.14.0.  You can install 
+Fabric easily by running the command `pip install Fabric==1.14.0`.
+
+Note: `fabric-iperf` is *not* compatible with Fabric 2.x (see #1)
 
 Once Fabric is installed, check out this repository to your machine
 
